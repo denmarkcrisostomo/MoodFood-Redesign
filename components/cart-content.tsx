@@ -3,6 +3,7 @@
 import type { CartLine as CartLineData } from "@shopify/hydrogen";
 import { Suspense } from "react";
 
+import { closeCartDrawer } from "@/lib/cart-drawer";
 import { useCart, useCartForm, useSuspenseCart } from "@/lib/cart";
 import { formatPrice } from "@/lib/money";
 
@@ -25,7 +26,16 @@ function CartContentBody({ showFooter }: { showFooter: boolean }) {
   const cartErrors = useCart((state) => state.errors.cart);
 
   if (lines.length === 0) {
-    return <p className="text-zinc-600">Your cart is empty.</p>;
+    return (
+      <div className="body">
+        <div className="empty">
+          <p>Your cart is empty</p>
+          <button type="button" className="btn" onClick={closeCartDrawer}>
+            Continue shopping
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const bannerMessages = [
@@ -34,21 +44,23 @@ function CartContentBody({ showFooter }: { showFooter: boolean }) {
   ];
 
   return (
-    <div className="flex flex-col gap-4">
-      {bannerMessages.length > 0 ? (
-        <ul role="alert" className="rounded bg-red-50 p-3 text-sm text-red-800">
-          {bannerMessages.map((message, index) => (
-            <li key={index}>{message}</li>
+    <>
+      <div className="body">
+        {bannerMessages.length > 0 ? (
+          <ul role="alert" className="cd-alert">
+            {bannerMessages.map((message, index) => (
+              <li key={index}>{message}</li>
+            ))}
+          </ul>
+        ) : null}
+        <ul className="lines">
+          {lines.map((line) => (
+            <CartLine key={line.id} line={line} />
           ))}
         </ul>
-      ) : null}
-      <ul className="flex flex-col gap-4">
-        {lines.map((line) => (
-          <CartLine key={line.id} line={line} />
-        ))}
-      </ul>
+      </div>
       {showFooter ? <CartTotals /> : null}
-    </div>
+    </>
   );
 }
 
@@ -61,34 +73,35 @@ function CartLine({ line }: { line: CartLineData }) {
   const errorId = `line-error-${line.id}`;
 
   return (
-    <li className="flex gap-3">
+    <li className="line">
       {merchandise?.image ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={merchandise.image.url}
           alt={merchandise.image.altText ?? ""}
-          width={80}
-          height={80}
-          className="h-20 w-20 rounded object-cover"
+          width={64}
+          height={64}
         />
-      ) : null}
-      <div className="flex flex-1 flex-col gap-1">
+      ) : (
+        <span className="ph" aria-hidden="true" />
+      )}
+      <div className="info">
         {merchandise?.product.handle ? (
-          <a href={`/products/${merchandise.product.handle}`} className="font-medium">
+          <a href={`/products/${merchandise.product.handle}`}>
             {merchandise.product.title}
           </a>
         ) : (
-          <span className="font-medium">{merchandise?.title ?? "Product"}</span>
+          <b>{merchandise?.title ?? "Product"}</b>
         )}
-        <span className="text-sm text-zinc-600">
+        <span className="opts">
           {(merchandise?.selectedOptions ?? [])
             .map((option) => `${option.name}: ${option.value}`)
             .join(" · ")}
         </span>
-        <form {...formProps()} className="flex flex-wrap items-center gap-2">
+        <form {...formProps()} className="qty">
           <button {...register("set")} hidden />
           <input type="hidden" {...register("lineId", { value: line.id })} />
-          <button {...register("decrease")} aria-label="Decrease quantity" className="rounded border px-2">
+          <button {...register("decrease")} aria-label="Decrease quantity">
             −
           </button>
           <input
@@ -96,24 +109,24 @@ function CartLine({ line }: { line: CartLineData }) {
             aria-label="Quantity"
             aria-invalid={errors.length > 0 || undefined}
             aria-describedby={errors.length > 0 ? errorId : undefined}
-            className={`w-14 rounded border px-2 py-1 text-center ${pending ? "opacity-30" : ""}`}
+            className={pending ? "pending" : undefined}
           />
-          <button {...register("increase")} aria-label="Increase quantity" className="rounded border px-2">
+          <button {...register("increase")} aria-label="Increase quantity">
             +
           </button>
-          <button {...register("remove")} className="text-sm underline">
+          <button {...register("remove")} className="rm">
             Remove
           </button>
         </form>
         {errors.length > 0 ? (
-          <ul id={errorId} role="alert" className="text-sm text-red-700">
+          <ul id={errorId} role="alert" className="cd-alert">
             {errors.map((error, index) => (
               <li key={index}>{error.message}</li>
             ))}
           </ul>
         ) : null}
       </div>
-      <span className={pending ? "opacity-30" : ""}>
+      <span className={`price${pending ? " pending" : ""}`}>
         {formatPrice(line.cost.totalAmount)}
       </span>
     </li>
@@ -128,19 +141,17 @@ function CartTotals() {
   );
 
   return (
-    <div className="flex flex-col gap-3 border-t pt-4">
-      <p className="flex justify-between font-medium">
-        <span>Subtotal</span>
-        <span className={totalsPending ? "opacity-30" : ""}>
+    <footer>
+      <p className="total">
+        <span>Estimated total</span>
+        <span className={totalsPending ? "pending" : undefined}>
           {formatPrice(subtotal)}
         </span>
       </p>
-      <a
-        href={checkoutUrl}
-        className="rounded bg-black px-4 py-3 text-center text-white dark:bg-white dark:text-black"
-      >
-        Checkout
+      <small>Taxes and shipping calculated at checkout.</small>
+      <a href={checkoutUrl} className="btn">
+        Check out
       </a>
-    </div>
+    </footer>
   );
 }

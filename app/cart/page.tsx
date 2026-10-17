@@ -8,7 +8,9 @@ export default function CartPage() {
     <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
       <h1 className="mb-6 text-3xl font-semibold">Cart</h1>
       <CartViewedTracker />
-      <CartContent />
+      <div className="cd cd-page">
+        <CartContent />
+      </div>
     </main>
   );
 }

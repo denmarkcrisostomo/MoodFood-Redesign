@@ -257,6 +257,38 @@ img { display: block; max-width: 100%; }
 .doc .shop-body h1, .doc .shop-body h2, .doc .shop-body h3 { font-size: 1.25rem; font-weight: 600; margin-top: 28px; text-transform: none; letter-spacing: 0; }
 .doc .empty { font-size: var(--s-lead); font-weight: 500; }
 
+/* ---------- cart (drawer + /cart page) ---------- */
+.cd { height: 100%; display: flex; flex-direction: column; }
+.cd header { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; }
+.cd header h2 { font: 700 1.25rem / 1 "Outfit", sans-serif; }
+.cd header button { border: 0; background: transparent; color: inherit; font: 500 1rem / 1 "Outfit", sans-serif; cursor: pointer; padding: 10px; transition: transform 160ms var(--ease-out); }
+.cd header button:active { transform: scale(0.97); }
+.cd .body { flex: 1; overflow-y: auto; padding: 8px 20px 20px; }
+.cd .empty { display: grid; gap: 20px; justify-items: start; padding-top: 24px; }
+.cd .empty p { font-size: 1.125rem; }
+.cd .empty .btn { --b-bg: var(--ink); --b-ink: var(--paper); text-transform: uppercase; letter-spacing: 0.04em; }
+.cd .lines { display: grid; gap: 16px; list-style: none; padding: 0; margin: 0; }
+.cd .line { display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: start; }
+.cd .line img, .cd .line .ph { width: 64px; height: 64px; object-fit: cover; background: var(--paper); display: block; }
+.cd .info { display: grid; gap: 2px; justify-items: start; }
+.cd .info a, .cd .info b { font-weight: 600; text-decoration: none; color: inherit; }
+.cd .opts { font-size: 0.8125rem; opacity: 0.7; }
+.cd .price { font-weight: 600; }
+.cd .pending { opacity: 0.3; }
+.cd .qty { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.cd .qty button { width: 30px; height: 30px; border: 0; cursor: pointer; background: transparent; color: inherit; box-shadow: inset 0 0 0 2px #141210; font: 600 1rem / 1 "Outfit", sans-serif; transition: transform 160ms var(--ease-out); }
+.cd .qty button:active { transform: scale(0.97); }
+.cd .qty input:not([type="hidden"]) { width: 36px; height: 30px; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; text-align: center; font: 600 1rem / 1 "Outfit", sans-serif; }
+.cd .qty .rm { width: auto; height: auto; margin-left: 8px; box-shadow: none; text-decoration: underline; font: 500 0.875rem / 1 "Outfit", sans-serif; }
+.cd-alert { list-style: none; padding: 10px 12px; margin: 0 0 12px; background: #fbe9e7; color: #7a1c10; font-size: 0.875rem; }
+.cd footer { padding: 18px 20px calc(20px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 12px; background: #f6f2e9; }
+.cd .total { display: flex; justify-content: space-between; font-weight: 600; font-size: 1.125rem; }
+.cd footer .btn { --b-bg: #141210; --b-ink: #fff; width: 100%; text-transform: uppercase; letter-spacing: 0.04em; }
+.cd footer small { font-size: 0.8125rem; opacity: 0.7; }
+.cd-page { height: auto; }
+.cd-page .body { padding-inline: 0; overflow: visible; }
+.cd-page footer { margin-top: 8px; padding-inline: 0; background: transparent; }
+
 @media (prefers-reduced-motion: reduce) { .pfig img, .pname .arrow { transition-duration: 1ms; } .pcard:hover .pfig img, .pcard:hover .pname .arrow { transform: none; } }
 
 /* ---------- brand statement ---------- */
@@ -290,6 +322,6 @@ img { display: block; max-width: 100%; }
 
 @media (prefers-reduced-motion: reduce) {
   .ln > span, .hero-jars img, .hero-cta { animation: fadeonly 300ms both; }
-  .btn, .tile-fig img, .plus::before, .plus::after { transition-duration: 1ms; }
+  .btn, .cd header button, .cd .qty button, .tile-fig img, .plus::before, .plus::after { transition-duration: 1ms; }
 }
 @keyframes fadeonly { from { opacity: 0; } to { opacity: 1; } }
