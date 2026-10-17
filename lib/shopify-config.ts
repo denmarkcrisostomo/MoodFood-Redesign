@@ -1,4 +1,5 @@
 import type { ShopifyScriptsI18n, ShopifyScriptsShop } from "@shopify/hydrogen";
+import { MARKET } from "@/lib/market";
 
 // Resolved on the server and passed to client components as serialized props.
 export function getShopifyScriptsConfig(): {
@@ -12,6 +13,6 @@ export function getShopifyScriptsConfig(): {
       storefrontId: process.env.PUBLIC_STOREFRONT_ID || "0",
       myshopifyDomain: process.env.PUBLIC_STORE_DOMAIN!,
     },
-    i18n: { country: "US", language: "EN" },
+    i18n: { country: MARKET.country, language: MARKET.language },
   };
 }

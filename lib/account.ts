@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 
 import { customerSession } from "./customer-session";
 import { createSessionManager } from "./session";
+import { MARKET } from "@/lib/market";
 
 /**
  * Read-only account context for Server Components. Exposes only getSessionItem,
@@ -25,7 +26,7 @@ export async function getAccountContext() {
   });
   const requestContext = createShopifyRequestContext({
     request,
-    i18n: { country: "US", language: "EN" },
+    i18n: { country: MARKET.country, language: MARKET.language },
   });
   const writable = await createSessionManager(request);
   const sessionManager: ReadonlyCustomerSessionManager = {

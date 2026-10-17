@@ -11,6 +11,7 @@ import { cartHandlers } from "@/lib/cart-handlers";
 import { customerSession } from "@/lib/customer-session";
 import { routeTemplates } from "@/lib/route-templates";
 import { createSessionManager } from "@/lib/session";
+import { MARKET } from "@/lib/market";
 
 // Customer Account handlers are only registered when a real store is configured.
 const handlerGroups = (() => {
@@ -28,7 +29,7 @@ const handlerGroups = (() => {
 export async function proxy(request: NextRequest) {
   const requestContext = createShopifyRequestContext({
     request,
-    i18n: { country: "US", language: "EN" },
+    i18n: { country: MARKET.country, language: MARKET.language },
   });
   const storefrontClient = createStorefrontClient({
     type: "public",

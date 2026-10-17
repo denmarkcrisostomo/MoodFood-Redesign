@@ -4,12 +4,13 @@ import {
   createShopifyRequestContext,
   createStorefrontClient,
 } from "@shopify/hydrogen";
+import { MARKET } from "@/lib/market";
 
 export const getStorefrontClient = cache(async () => {
   const requestHeaders = await headers();
   const requestContext = createShopifyRequestContext({
     request: { headers: requestHeaders },
-    i18n: { country: "US", language: "EN" },
+    i18n: { country: MARKET.country, language: MARKET.language },
   });
 
   return createStorefrontClient({

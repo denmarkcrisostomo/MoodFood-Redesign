@@ -5,6 +5,7 @@ import {
   gql,
 } from "@shopify/hydrogen";
 import { cacheLife } from "next/cache";
+import { MARKET } from "@/lib/market";
 
 export type JarKey = "chunky" | "recover" | "energy";
 
@@ -74,7 +75,7 @@ export async function getJars(): Promise<Jar[]> {
     type: "public",
     requestContext: createShopifyRequestContext({
       request: { headers: new Headers() },
-      i18n: { country: "US", language: "EN" },
+      i18n: { country: MARKET.country, language: MARKET.language },
     }),
     config: {
       storeDomain: process.env.PUBLIC_STORE_DOMAIN!,
