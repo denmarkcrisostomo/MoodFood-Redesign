@@ -240,6 +240,23 @@ img { display: block; max-width: 100%; }
 /* entrance: readable at rest, travel only adds polish */
 .rise-on .rise { transform: translateY(26px); opacity: 0.35; transition: transform 700ms var(--ease-out), opacity 700ms var(--ease-out); transition-delay: var(--d, 0ms); }
 .rise-on .rise.in { transform: none; opacity: 1; }
+/* ---------- 8. Info and policy pages ---------- */
+.doc { background: #f6f2e9; color: #1a1612; flex: 1; padding: calc(var(--navh) + clamp(24px, 4vw, 56px)) 0 clamp(64px, 8vw, 120px); }
+.doc-in { max-width: 46rem; margin-inline: auto; padding-inline: var(--gl); }
+.doc h1 { font: 700 var(--s-head) / 1 "Outfit", sans-serif; letter-spacing: -0.03em; text-transform: uppercase; margin-bottom: 24px; }
+.doc .lead { font-size: var(--s-lead); line-height: 1.35; font-weight: 500; margin-bottom: 8px; }
+.doc section { margin-top: clamp(28px, 3vw, 40px); }
+.doc h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 10px; }
+.doc p, .doc li { font-size: var(--s-body); line-height: 1.55; }
+.doc p + p { margin-top: 12px; }
+.doc ul { padding-left: 1.2em; list-style: disc; display: grid; gap: 8px; }
+.doc a { text-decoration: underline; text-underline-offset: 3px; }
+.doc .shop-body p, .doc .shop-body ul, .doc .shop-body ol { margin-top: 12px; }
+.doc .shop-body ul { list-style: disc; padding-left: 1.2em; }
+.doc .shop-body ol { list-style: decimal; padding-left: 1.4em; }
+.doc .shop-body h1, .doc .shop-body h2, .doc .shop-body h3 { font-size: 1.25rem; font-weight: 600; margin-top: 28px; text-transform: none; letter-spacing: 0; }
+.doc .empty { font-size: var(--s-lead); font-weight: 500; }
+
 @media (prefers-reduced-motion: reduce) { .pfig img, .pname .arrow { transition-duration: 1ms; } .pcard:hover .pfig img, .pcard:hover .pname .arrow { transform: none; } }
 
 /* ---------- brand statement ---------- */
@@ -261,18 +278,18 @@ img { display: block; max-width: 100%; }
 @media (max-width: 860px) { .claims { grid-template-columns: 1fr; gap: 32px; } }
 
 /* ---------- 7. Footer ---------- */
-.foot { background: #f6f2e9; color: #1a1612; padding-block: clamp(48px, 6vw, 96px) 28px; min-height: 70svh; display: flex; flex-direction: column; justify-content: space-between; }
-.foot .mark { font: 700 min(14.1vw, 300px) / 0.82 "Outfit", sans-serif; letter-spacing: -0.045em; text-transform: uppercase; white-space: nowrap; }
-.foot .cols { margin-top: clamp(40px, 6vw, 72px); display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 10px; row-gap: 32px; }
-.foot .places { grid-column: 1 / span 6; display: grid; gap: 4px; font: 600 clamp(1.625rem, 1rem + 1.6vw, 2.25rem) / 1.15 "Outfit", sans-serif; }
-.foot .places a { text-decoration: none; justify-self: start; transition: transform 200ms var(--ease-out); }
-@media (hover: hover) and (pointer: fine) { .foot .places a:hover { transform: translateX(10px); } }
-.foot .small { grid-column: 8 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-content: start; font-size: 0.9375rem; font-weight: 500; }
-.foot .legal { margin-top: clamp(48px, 8vw, 96px); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: var(--s-small); font-weight: 500; }
-@media (max-width: 720px) { .foot .places, .foot .small { grid-column: 1 / -1; } .foot .mark { font-size: 14.1vw; } }
+.foot { background: #f6f2e9; color: #1a1612; padding-block: clamp(56px, 6vw, 96px) 32px; }
+.foot .mark { font: 700 min(14.1vw, 300px) / 0.82 "Outfit", sans-serif; letter-spacing: -0.045em; text-transform: uppercase; white-space: nowrap; text-align: center; }
+.foot .legal { margin-top: clamp(48px, 6vw, 80px); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 28px; text-align: center; font-size: var(--s-small); font-weight: 500; }
+.foot .legal .lg { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 22px; }
+.foot .legal a { text-decoration: none; opacity: 0.75; transition: opacity 160ms ease; }
+.foot .legal .dot { opacity: 0.4; }
+.foot .legal .own { opacity: 0.75; }
+@media (hover: hover) and (pointer: fine) { .foot .legal a:hover { opacity: 1; } }
+@media (max-width: 1100px) { .foot .legal .dot { display: none; } .foot .legal .lg, .foot .legal .own { flex-basis: 100%; } .foot .legal { gap: 14px 0; } }
 
 @media (prefers-reduced-motion: reduce) {
   .ln > span, .hero-jars img, .hero-cta { animation: fadeonly 300ms both; }
-  .btn, .tile-fig img, .foot .places a, .plus::before, .plus::after { transition-duration: 1ms; }
+  .btn, .tile-fig img, .plus::before, .plus::after { transition-duration: 1ms; }
 }
 @keyframes fadeonly { from { opacity: 0; } to { opacity: 1; } }

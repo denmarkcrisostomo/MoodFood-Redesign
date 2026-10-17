@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -9,6 +10,12 @@ import { toURLSearchParams } from "@/lib/search-params";
 type Props = {
   params: Promise<{ handle: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+const COMING_SOON: Record<string, string> = {
+  spreads: "High Protein Peanut Butter",
+  bar: "Bar",
+  kids: "KiDS",
 };
 
 export default function CollectionPage(props: Props) {
@@ -25,7 +32,21 @@ async function CollectionContent({ params, searchParams }: Props) {
   const { handle } = await params;
   const urlSearch = toURLSearchParams(await searchParams);
   const result = await queryCollection(handle, urlSearch.toString());
-  if (!result) notFound();
+  if (!result) {
+    // Landing-page tiles link here before the store has these collections.
+    if (COMING_SOON[handle]) {
+      return (
+        <div style={{ paddingTop: "var(--navh)" }}>
+          <h1 className="mb-2 text-3xl font-semibold">{COMING_SOON[handle]}</h1>
+          <p className="text-zinc-600">Coming soon. Check back shortly.</p>
+          <p className="mt-6">
+            <Link href="/" className="underline underline-offset-4">Back to home</Link>
+          </p>
+        </div>
+      );
+    }
+    notFound();
+  }
 
   return (
     <>
