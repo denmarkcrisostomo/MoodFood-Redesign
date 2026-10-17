@@ -2,6 +2,10 @@
 
 A redesign concept for [Mood Food](https://moodfood.co), the high-protein peanut butter brand from the Philippines. It is **inspired by Mood Food** and built from their brand: the name, the three jars (Chunky, Recover, Energy), the product photos and the claims on the page come from the brand and belong to Mood Food. This is not an official Mood Food site.
 
+<p align="center">
+  <img src="docs/assets/shop-scroll.gif" alt="Mood Food redesign: home page scrolling from top to bottom" width="800" />
+</p>
+
 ## Stack
 
 - [Next.js](https://nextjs.org) 16 (App Router, Cache Components) and React 19
