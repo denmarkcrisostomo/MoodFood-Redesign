@@ -78,13 +78,14 @@ img { display: block; max-width: 100%; }
 .drawer { position: fixed; z-index: 49; top: var(--navh); left: 0; right: 0; background: #f6f2e9; padding: 8px var(--gr) 20px var(--gl); display: none; }
 .drawer.open { display: grid; }
 .drawer a { font: 500 1.25rem / 1 "Outfit", sans-serif; padding: 16px 0; text-decoration: none; color: #1a1612; text-transform: uppercase; letter-spacing: 0.04em; }
-/* The left links need ~600px beside the centred logo: below 1280 they move into the Menu drawer,
-   and from 1280 to 1399 they tighten so the logo keeps clear space. 1400 and up is the full size. */
-@media (min-width: 1280px) and (max-width: 1399.98px) {
-  .links { gap: calc(1.8vw - 6px); }
+/* The left links share the bar with the centred logo: below 1366 they move into the Menu drawer.
+   From 1366 up they use a slightly smaller size and a gap that grows with the viewport, which keeps
+   the clear space before the logo roomy (about 110px or more) instead of nearly touching it. */
+@media (min-width: 1366px) {
+  .links { gap: clamp(14px, 1.6vw - 3px, 28px); }
   .links a { font-size: 0.8125rem; letter-spacing: 0.05em; }
 }
-@media (max-width: 1279.98px) { .links { display: none; } .menu { display: grid; } }
+@media (max-width: 1365.98px) { .links { display: none; } .menu { display: grid; } }
 @media (max-width: 980px) { .utility .login { display: none; } }
 @media (max-width: 720px) { :root { --nav: 60px; } .logo { font-size: 1.25rem; } .bar { font-size: 0.75rem; } }
 
@@ -207,7 +208,7 @@ img { display: block; max-width: 100%; }
 .buy-inline { display: none; }
 .facts-inline { display: none; }
 .jar-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; z-index: 2; }
-.jar-floor { position: absolute; z-index: 1; left: 50%; top: 79%; width: min(30vw, 420px); height: 22px; transform: translateX(-50%); background: var(--tone); border-radius: 50%; opacity: 0; }
+.jar-floor { position: absolute; z-index: 1; left: 50%; top: 0; width: min(30vw, 420px); height: 22px; transform: translate(-50%, 0); background: var(--tone); border-radius: 50%; opacity: 0; }
 .panel-jar { display: none; }
 .no-gl .jar-canvas, .no-gl .jar-floor { display: none; }
 .no-gl .panel-jar { display: block; position: absolute; z-index: 2; left: 50%; top: 50%; width: min(38vw, 520px); transform: translate(-50%, -50%); }
@@ -230,7 +231,6 @@ img { display: block; max-width: 100%; }
   .facts { display: none; }
   .buy-inline { display: grid; margin-top: 14px; }
   .facts-inline { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; font-size: 0.9375rem; font-weight: 600; }
-  .jar-floor { top: 61%; width: 52vw; }
   .no-gl .panel-jar { top: 38%; width: 66vw; }
   .chapters button { padding: 0 14px; font-size: 0.9375rem; }
 }

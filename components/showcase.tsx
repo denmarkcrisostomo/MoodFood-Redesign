@@ -184,6 +184,9 @@ export function Showcase({ jars }: { jars: Jar[] }) {
     const disposables: { dispose: () => void }[] = [];
     const jarDims = { h: 0, w: 0 };
     const place = { x0: 0, y0: 0, sc0: 1, gy: 0 };
+    /* per jar: base height in group space and base radius, for the floor shadow */
+    const bases: { y: number; r: number }[] = [];
+    const floorPos = { y: [] as number[], w: [] as number[] };
     let sT = 0, sC = 0, lastIdx = -1, lastJar = -1, dirty = true, last = performance.now();
 
     const nav = () => document.querySelector<HTMLElement>(".nav");
@@ -303,9 +306,20 @@ export function Showcase({ jars }: { jars: Jar[] }) {
         const bot = new THREE.Mesh(new THREE.CircleGeometry(rBot, 48), bom);
         bot.rotation.x = Math.PI / 2; bot.position.y = (yc - rows[rows.length - 1][0]) / 100; g.add(bot);
         g.visible = i === 0;
+        bases.push({ y: (yc - rows[rows.length - 1][0]) / 100, r: rBot });
         scene.add(g); groups.push(g);
       });
       return true;
+    };
+
+    const FLOOR_K = 1.63, FLOOR_DY = -4; /* calibrated so 1440x900 matches the old fixed 79% / 420px floor */
+    const FLOOR_H = 22;
+    const placeFloor = (i: number) => {
+      const y = floorPos.y[i], bw = floorPos.w[i];
+      if (y === undefined) return;
+      const w = bw * FLOOR_K;
+      floor.style.width = `${w.toFixed(1)}px`;
+      floor.style.transform = `translate(-50%, ${(y + FLOOR_DY - FLOOR_H / 2).toFixed(1)}px)`;
     };
 
     const resize = () => {
@@ -334,6 +348,16 @@ export function Showcase({ jars }: { jars: Jar[] }) {
       place.x0 = (cx - w / 2) * wpp;
       place.y0 = -(cy - h / 2) * wpp;
       place.sc0 = (him.offsetWidth * 0.8 * wpp) / jarDims.h;
+
+      /* floor shadow: project each jar's resting base (x 0, y gy + base, z 0) to the screen */
+      camera.updateMatrixWorld();
+      bases.forEach((b, i) => {
+        const c = new THREE.Vector3(0, place.gy + b.y, 0).project(camera);
+        const edge = new THREE.Vector3(b.r, place.gy + b.y, 0).project(camera);
+        floorPos.y[i] = ((1 - c.y) / 2) * h;
+        floorPos.w[i] = ((edge.x - c.x) / 2) * w * 2;
+      });
+      placeFloor(Math.max(0, lastJar));
       dirty = true;
     };
 
@@ -389,6 +413,7 @@ export function Showcase({ jars }: { jars: Jar[] }) {
       if (jarIdx !== lastJar) {
         lastJar = jarIdx;
         groups.forEach((g, i) => { g.visible = i === jarIdx; });
+        placeFloor(jarIdx);
       }
 
       /* the jar leaves the hero for the centre while it turns */
