@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 import type * as ThreeNS from "three";
 
+import { HeroHeadline } from "@/components/hero-headline";
 import { useCartForm } from "@/lib/cart";
 import { openCartDrawer } from "@/lib/cart-drawer";
 import type { Jar, JarKey } from "@/lib/jars";
@@ -479,24 +480,12 @@ export function Showcase({ jars }: { jars: Jar[] }) {
         <div className="bg-low" aria-hidden="true" />
 
         <div className="hero" ref={heroRef} id="p-hero">
-          <div className="hl-layer up">
-            <h1 className="hl">
-              <span className="ln"><span>Eat your</span></span>
-              <span className="ln"><span>mood</span></span>
-            </h1>
-          </div>
-          <div className="hl-layer low" aria-hidden="true">
-            <p className="hl">
-              <span className="ln"><span>Eat your</span></span>
-              <span className="ln"><span>mood</span></span>
-            </p>
-          </div>
+          <HeroHeadline />
           <div className="hero-jars">
             {(["chunky", "recover", "energy"] as JarKey[]).map((k, i) => (
               <img key={k} src={IMG[i]} width={713} height={713} alt={COPY[k].alt} />
             ))}
           </div>
-          <p className="hero-sub">High-protein peanut butter in three jars. Pick the mood.</p>
         </div>
 
         {jars.map((jar, i) => {
