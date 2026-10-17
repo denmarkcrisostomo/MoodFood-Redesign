@@ -20,24 +20,27 @@ const HASH: Record<string, number> = { chunky: 1, recover: 2, energy: 3 };
 
 const COPY: Record<
   JarKey,
-  { name: string; line: string; facts: string[]; alt: string }
+  { name: string; line: string; short: string[]; facts: string[]; alt: string }
 > = {
   chunky: {
     name: "Chunky",
     line: "Peanut pieces left in. Something to chew on.",
-    facts: ["High protein", "No added sugar", "250g and 500g"],
+    short: ["10g plant-based protein", "No added sugar", "250g and 500g"],
+    facts: ["10g of plant-based protein per serving", "No added sugar", "250g and 500g"],
     alt: "Mood Food Chunky peanut butter, green label",
   },
   recover: {
     name: "Recover",
     line: "Chocolate peanut butter for after the long one.",
-    facts: ["High protein", "Chocolate peanut butter", "250g and 500g"],
+    short: ["10g plant-based protein", "Chocolate", "250g and 500g"],
+    facts: ["10g of plant-based protein per serving", "Chocolate peanut butter", "250g and 500g"],
     alt: "Mood Food Recover chocolate peanut butter, blue label",
   },
   energy: {
     name: "Energy",
     line: "Peanut butter for the first thing you do today.",
-    facts: ["High protein", "No added sugar", "250g and 500g"],
+    short: ["10g plant-based protein", "No added sugar", "250g and 500g"],
+    facts: ["10g of plant-based protein per serving", "No added sugar", "250g and 500g"],
     alt: "Mood Food Energy peanut butter, orange label",
   },
 };
@@ -497,7 +500,7 @@ export function Showcase({ jars }: { jars: Jar[] }) {
                 <h2>{c.name}</h2>
                 <p>{c.line}</p>
                 <ul className="facts-inline">
-                  {c.facts.map((f) => <li key={f}>{f}</li>)}
+                  {c.short.map((f) => <li key={f}>{f}</li>)}
                 </ul>
                 <Buy jar={jar} index={sizes[i]} onSize={setSize(i)} className="buy buy-inline" />
               </div>
