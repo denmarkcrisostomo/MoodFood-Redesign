@@ -211,6 +211,55 @@ img { display: block; max-width: 100%; }
   .chapters button { padding: 0 14px; font-size: 0.9375rem; }
 }
 
+/* ---------- products ---------- */
+.products { background: #f6f2e9; color: #1a1612; padding-block: clamp(56px, 6.5vw, 104px) clamp(24px, 3vw, 48px); scroll-margin-top: var(--navh); }
+.phead { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 10px; row-gap: 18px; align-items: end; margin-bottom: clamp(24px, 3vw, 44px); }
+.phead h2 { grid-column: 1 / span 8; font: 700 clamp(2rem, 0.8rem + 3.4vw, 4rem) / 0.98 "Outfit", sans-serif; letter-spacing: -0.035em; text-wrap: balance; }
+.phead p { grid-column: 9 / -1; font-size: var(--s-body); max-width: 28ch; color: #4a413d; }
+.pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.pcard { display: block; text-decoration: none; color: inherit; }
+.pfig { background: #ffffff; position: relative; aspect-ratio: 1 / 1; display: grid; place-items: center; overflow: hidden; transition: transform 200ms var(--ease-out); }
+.pfig img { width: 80%; height: auto; transition: transform 340ms var(--ease-out); }
+.pcard:active .pfig { transform: scale(0.97); }
+.pname { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; font: 600 clamp(1.25rem, 1rem + 0.9vw, 1.75rem) / 1.15 "Outfit", sans-serif; letter-spacing: -0.01em; }
+.pname .arrow { flex: none; transition: transform 240ms var(--ease-out); }
+.pdesc { margin-top: 4px; max-width: 36ch; color: #4a413d; font-size: 1rem; }
+@media (hover: hover) and (pointer: fine) {
+  .pcard:hover .pfig img { transform: translateY(-10px) rotate(-2deg) scale(1.04); }
+  .pcard:hover .pname .arrow { transform: translateX(6px); }
+}
+@media (max-width: 900px) {
+  .phead h2, .phead p { grid-column: 1 / -1; }
+  .pgrid { grid-template-columns: 1fr 1fr; }
+  .pcard:nth-child(3) { grid-column: 1 / -1; }
+  .pcard:nth-child(3) .pfig { aspect-ratio: 2 / 1; }
+  .pcard:nth-child(3) .pfig img { width: 40%; }
+}
+@media (max-width: 520px) { .pgrid { grid-template-columns: 1fr; } .pcard:nth-child(3) .pfig { aspect-ratio: 1 / 1; } .pcard:nth-child(3) .pfig img { width: 80%; } }
+
+/* entrance: readable at rest, travel only adds polish */
+.rise-on .rise { transform: translateY(26px); opacity: 0.35; transition: transform 700ms var(--ease-out), opacity 700ms var(--ease-out); transition-delay: var(--d, 0ms); }
+.rise-on .rise.in { transform: none; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .pfig img, .pname .arrow { transition-duration: 1ms; } .pcard:hover .pfig img, .pcard:hover .pname .arrow { transform: none; } }
+
+/* ---------- brand statement ---------- */
+.brand { background: var(--ground); color: var(--paper); min-height: 92svh; display: flex; flex-direction: column; justify-content: center; gap: clamp(48px, 7vw, 104px); padding-block: clamp(56px, 7vw, 112px) clamp(80px, 10vw, 160px); }
+.brand h2 { font: 700 clamp(2.4rem, 0.4rem + 6.3vw, 7rem) / 0.94 "Outfit", sans-serif; letter-spacing: -0.035em; text-transform: uppercase; }
+.brand h2 span { display: block; }
+.brand h2 .a { color: var(--orange); }
+.brand h2 .b { color: var(--green); }
+.claims { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 24px; }
+.claims h3 { font: 600 1.25rem / 1.2 "Outfit", sans-serif; color: var(--yellow); margin-bottom: 14px; }
+.claims ul { list-style: none; margin: 0; padding: 0; }
+.claims li { font-size: var(--s-body); line-height: 1.35; padding: 7px 0; }
+.follow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 32px; }
+.follow p { font-size: var(--s-lead); line-height: 1.3; font-weight: 500; }
+.follow .socials { display: flex; gap: 4px; }
+.follow .ib { color: var(--paper); min-width: 52px; height: 52px; }
+.follow .ib svg { width: 26px; height: 26px; }
+@media (hover: hover) and (pointer: fine) { .follow .ib:hover { background: rgba(242, 234, 216, 0.12); } }
+@media (max-width: 860px) { .claims { grid-template-columns: 1fr; gap: 32px; } }
+
 /* ---------- 7. Footer ---------- */
 .foot { background: #f6f2e9; color: #1a1612; padding-block: clamp(48px, 6vw, 96px) 28px; min-height: 70svh; display: flex; flex-direction: column; justify-content: space-between; }
 .foot .mark { font: 700 min(14.1vw, 300px) / 0.82 "Outfit", sans-serif; letter-spacing: -0.045em; text-transform: uppercase; white-space: nowrap; }
@@ -223,7 +272,6 @@ img { display: block; max-width: 100%; }
 @media (max-width: 720px) { .foot .places, .foot .small { grid-column: 1 / -1; } .foot .mark { font-size: 14.1vw; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .js .rise { transform: none; transition: opacity 200ms ease; }
   .ln > span, .hero-jars img, .hero-cta { animation: fadeonly 300ms both; }
   .btn, .tile-fig img, .foot .places a, .plus::before, .plus::after { transition-duration: 1ms; }
 }
