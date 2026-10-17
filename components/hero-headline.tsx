@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 function fitHeadline(root: HTMLElement) {
   const spans = Array.from(root.querySelectorAll<HTMLElement>(".ln > span"));
   if (spans.length < 3) return;
-  spans.forEach((sp) => { sp.style.letterSpacing = ""; });
+  spans.forEach((sp) => { sp.style.letterSpacing = ""; sp.style.marginRight = ""; });
   /* visible width: the range includes the trailing letter-space after the last glyph */
   const ink = (sp: HTMLElement) => {
     const r = document.createRange();
@@ -19,6 +19,10 @@ function fitHeadline(root: HTMLElement) {
     const n = (sp.textContent ?? "").length;
     const cur = parseFloat(getComputedStyle(sp).letterSpacing) || 0;
     sp.style.letterSpacing = `${cur + (target - ink(sp)) / (n - 1)}px`;
+  });
+  /* cancel the trailing letter-space so the block is exactly as wide as the ink (centres true) */
+  spans.forEach((sp) => {
+    sp.style.marginRight = `${-(parseFloat(getComputedStyle(sp).letterSpacing) || 0)}px`;
   });
 }
 

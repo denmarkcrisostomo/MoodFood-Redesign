@@ -324,10 +324,13 @@ export function Showcase({ jars }: { jars: Jar[] }) {
       const visH = 2 * d * Math.tan(fov / 2), wpp = visH / h;
       place.gy = phone ? visH * 0.12 : visH * -0.02;
 
-      /* where the Chunky jar stands in the hero, so the 3D jar lifts off from exactly there */
+      /* where the Chunky jar stands in the hero, so the 3D jar lifts off from exactly there.
+         Side by side, the row is absolutely placed with its top on the seam and lifted by
+         translateY(-50%); stacked, it sits in the flow. Layout offsets ignore transforms. */
       const him = heroJars.querySelector<HTMLElement>("img")!;
-      const cx = heroJars.offsetLeft + (phone ? -heroJars.offsetWidth / 2 : 0) + him.offsetWidth / 2;
-      const cy = heroJars.offsetTop + (phone ? heroJars.offsetHeight / 2 : 0);
+      const sideBySide = getComputedStyle(heroJars).position === "absolute";
+      const cx = heroJars.offsetLeft + him.offsetLeft + him.offsetWidth / 2;
+      const cy = heroJars.offsetTop + (sideBySide ? 0 : heroJars.offsetHeight / 2);
       place.x0 = (cx - w / 2) * wpp;
       place.y0 = -(cy - h / 2) * wpp;
       place.sc0 = (him.offsetWidth * 0.8 * wpp) / jarDims.h;
