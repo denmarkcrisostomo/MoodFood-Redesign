@@ -186,7 +186,7 @@ export function Showcase({ jars }: { jars: Jar[] }) {
     const place = { x0: 0, y0: 0, sc0: 1, gy: 0 };
     /* per jar: base height in group space and base radius, for the floor shadow */
     const bases: { y: number; r: number }[] = [];
-    const floorPos = { y: [] as number[], w: [] as number[] };
+    const floorPos = { rx: [] as number[], ry: [] as number[], dy: [] as number[] };
     let sT = 0, sC = 0, lastIdx = -1, lastJar = -1, dirty = true, last = performance.now();
 
     const nav = () => document.querySelector<HTMLElement>(".nav");
@@ -306,20 +306,47 @@ export function Showcase({ jars }: { jars: Jar[] }) {
         const bot = new THREE.Mesh(new THREE.CircleGeometry(rBot, 48), bom);
         bot.rotation.x = Math.PI / 2; bot.position.y = (yc - rows[rows.length - 1][0]) / 100; g.add(bot);
         g.visible = i === 0;
-        bases.push({ y: (yc - rows[rows.length - 1][0]) / 100, r: rBot });
+        /* The bottom row is the rounded heel, much narrower than the body (0.55-0.69x), so the
+           shadow is sized from the widest row of the lower half, which overhangs the base. */
+        const rBody = Math.max(...rows.slice(rows.length >> 1).map((r) => (r[2] - r[1]) / 200));
+        bases.push({ y: (yc - rows[rows.length - 1][0]) / 100, r: rBody });
         scene.add(g); groups.push(g);
       });
       return true;
     };
 
-    const FLOOR_K = 1.63, FLOOR_DY = -4; /* calibrated so 1440x900 matches the old fixed 79% / 420px floor */
-    const FLOOR_H = 22;
-    const placeFloor = (i: number) => {
-      const y = floorPos.y[i], bw = floorPos.w[i];
-      if (y === undefined) return;
-      const w = bw * FLOOR_K;
-      floor.style.width = `${w.toFixed(1)}px`;
-      floor.style.transform = `translate(-50%, ${(y + FLOOR_DY - FLOOR_H / 2).toFixed(1)}px)`;
+    /* Contact shadow, sized for the jar at rest (centre stage, scale 1) from the projected
+       footprint ellipse of its body (rx, ry in px). A tight dark ellipse sits on the base and
+       a wider, fainter, softer one spreads beneath it. Sizes change only on resize or when the
+       product changes; motion is transform only (see trackFloor). */
+    const sizeFloor = (i: number) => {
+      const rx = floorPos.rx[i];
+      if (rx === undefined) return;
+      /* phones frame the jar from a flatter angle; keep the shadow from thinning to a line */
+      const ry = Math.max(floorPos.ry[i], rx * 0.1);
+      const set = (k: string, v: number) => floor.style.setProperty(k, `${v.toFixed(1)}px`);
+      set("--cw", rx * 2 * 1.02);
+      set("--ch", ry * 2 * 0.92 + 4);
+      set("--cdy", ry * 0.06);
+      set("--cb", Math.max(1.5, rx * 0.022));
+      set("--pw", rx * 2 * 1.42);
+      set("--ph", ry * 2 * 1.55 + 10);
+      set("--pdy", ry * 0.3);
+      set("--pb", Math.max(5, rx * 0.085));
+    };
+    /* keep the shadow under the jar's base as it moves and scales out of the hero */
+    const v3 = { c: null as ThreeNS.Vector3 | null, e: null as ThreeNS.Vector3 | null };
+    const trackFloor = (i: number) => {
+      const g = groups[i], b = bases[i], rx = floorPos.rx[i];
+      if (!g || !b || !rx) return;
+      const w = pin.clientWidth, h = pin.clientHeight;
+      const c = (v3.c ??= new THREE.Vector3()), e = (v3.e ??= new THREE.Vector3());
+      const sc = g.scale.y, by = g.position.y + b.y * sc;
+      c.set(g.position.x, by, 0).project(camera);
+      e.set(g.position.x + b.r * sc, by, 0).project(camera);
+      const x = ((c.x + 1) / 2) * w, y = ((1 - c.y) / 2) * h + floorPos.dy[i] * sc;
+      const k = (((e.x - c.x) / 2) * w) / rx;
+      floor.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${k.toFixed(4)})`;
     };
 
     const resize = () => {
@@ -349,15 +376,21 @@ export function Showcase({ jars }: { jars: Jar[] }) {
       place.y0 = -(cy - h / 2) * wpp;
       place.sc0 = (him.offsetWidth * 0.8 * wpp) / jarDims.h;
 
-      /* floor shadow: project each jar's resting base (x 0, y gy + base, z 0) to the screen */
+      /* floor shadow: project each jar's resting footprint (a circle of body radius at the
+         base, centred at x 0, y gy + base, z 0). The camera looks down on it, so it is an
+         ellipse whose front edge drops below the base centre in proportion to the jar's size. */
       camera.updateMatrixWorld();
+      const sy = (v: ThreeNS.Vector3) => ((1 - v.project(camera).y) / 2) * h;
       bases.forEach((b, i) => {
-        const c = new THREE.Vector3(0, place.gy + b.y, 0).project(camera);
-        const edge = new THREE.Vector3(b.r, place.gy + b.y, 0).project(camera);
-        floorPos.y[i] = ((1 - c.y) / 2) * h;
-        floorPos.w[i] = ((edge.x - c.x) / 2) * w * 2;
+        const y = place.gy + b.y;
+        const c = new THREE.Vector3(0, y, 0).project(camera);
+        const edge = new THREE.Vector3(b.r, y, 0).project(camera);
+        const front = sy(new THREE.Vector3(0, y, b.r)), back = sy(new THREE.Vector3(0, y, -b.r));
+        floorPos.rx[i] = ((edge.x - c.x) / 2) * w;
+        floorPos.ry[i] = (front - back) / 2;
+        floorPos.dy[i] = (front + back) / 2 - ((1 - c.y) / 2) * h;
       });
-      placeFloor(Math.max(0, lastJar));
+      sizeFloor(Math.max(0, lastJar));
       dirty = true;
     };
 
@@ -413,7 +446,7 @@ export function Showcase({ jars }: { jars: Jar[] }) {
       if (jarIdx !== lastJar) {
         lastJar = jarIdx;
         groups.forEach((g, i) => { g.visible = i === jarIdx; });
-        placeFloor(jarIdx);
+        sizeFloor(jarIdx);
       }
 
       /* the jar leaves the hero for the centre while it turns */
@@ -425,6 +458,7 @@ export function Showcase({ jars }: { jars: Jar[] }) {
         g.scale.set(sc, sc, sc);
         g.rotation.y = reduce ? 0 : -s * Math.PI * 2;
       });
+      if (renderer) trackFloor(jarIdx);
       floor.style.opacity = sstep(0.6, 1, s).toFixed(2);
     };
 
