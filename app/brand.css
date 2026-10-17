@@ -1,16 +1,14 @@
-/* Mood Food brand layer: nav, hero + showcase scene, footer. */
+/* Mood Food brand layer: nav, hero + showcase scene, products, brand statement, footer, cart. */
 /* Layout concept: colour chapters. Every section is one flat field taken from a jar label
-   (green Chunky, blue Recover, orange Energy). The showcase is a pinned horizontal scroll in
-   which a real 3D jar turns 360 degrees per flavour while the field colour changes with it. */
+   (green Chunky, blue Recover, orange Energy). The showcase is a pinned stage in which the hero
+   morphs in place into three scenes while a real 3D jar turns 360 degrees per flavour. */
 :root {
   --ground: #171615;
   --paper: #f2ead8;
   --ink: #141210;
   --green: #7bd48a;
-  --green-ink: #0f2614;
   --blue: #0b54d8;
   --orange: #fb6a07;
-  --orange-ink: #1c0e05;
   --yellow: #ffe227;
 
   --bar: 36px;
@@ -27,11 +25,9 @@
   --s-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
   --s-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
   --s-head: clamp(2rem, 1.3rem + 3.2vw, 4rem);
-  --s-poster: clamp(3.25rem, 1rem + 9vw, 9.5rem);
 
 }
 img { display: block; max-width: 100%; }
-.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .in { padding-left: var(--gl); padding-right: var(--gr); }
 
 /* one button shape: a flat rectangle */
@@ -48,9 +44,6 @@ img { display: block; max-width: 100%; }
 @media (hover: hover) and (pointer: fine) {
   .btn:hover { background: var(--b-hover, var(--ink)); color: var(--b-hover-ink, var(--paper)); }
 }
-.btn small { font: inherit; }
-
-/* entrance: resting state is readable, motion only adds travel */
 
 /* ---------- announcement bar + header ---------- */
 .bar {
@@ -81,8 +74,6 @@ img { display: block; max-width: 100%; }
 .ib.text { padding: 0 12px; }
 .count { position: absolute; top: 4px; right: 2px; min-width: 18px; height: 18px; padding: 0 5px; display: grid; place-items: center; background: var(--blue); color: #fff; font: 600 0.6875rem / 1 "Outfit", sans-serif; transform: scale(0); transition: transform 240ms var(--ease-out); }
 .count.on { transform: scale(1); }
-.count.bump { animation: bump 300ms var(--ease-out); }
-@keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
 .menu { display: none; justify-self: start; }
 .drawer { position: fixed; z-index: 49; top: var(--navh); left: 0; right: 0; background: #f6f2e9; padding: 8px var(--gr) 20px var(--gl); display: none; }
 .drawer.open { display: grid; }
@@ -322,6 +313,6 @@ img { display: block; max-width: 100%; }
 
 @media (prefers-reduced-motion: reduce) {
   .ln > span, .hero-jars img, .hero-cta { animation: fadeonly 300ms both; }
-  .btn, .cd header button, .cd .qty button, .tile-fig img, .plus::before, .plus::after { transition-duration: 1ms; }
+  .btn, .cd header button, .cd .qty button { transition-duration: 1ms; }
 }
 @keyframes fadeonly { from { opacity: 0; } to { opacity: 1; } }
