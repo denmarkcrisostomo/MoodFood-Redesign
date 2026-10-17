@@ -404,11 +404,14 @@ export function Showcase({ jars }: { jars: Jar[] }) {
       else if (sC !== sT) { sC = sT; dirty = true; }
       if (dirty) {
         apply(sC);
-        if (renderer && sC > 0.002) {
-          const r = show.getBoundingClientRect();
-          if (r.bottom > -50 && r.top < window.innerHeight + 50) renderer.render(scene, camera);
-        }
         dirty = false;
+      }
+      /* Redraw every frame while the stage is on screen. A canvas that is only drawn
+         when scroll changes can show a half-stale frame after the browser recycles its
+         tiles (seen when the jar scrolls up into the footer). */
+      if (renderer && sC > 0.002) {
+        const r = show.getBoundingClientRect();
+        if (r.bottom > -50 && r.top < window.innerHeight + 50) renderer.render(scene, camera);
       }
       raf = requestAnimationFrame(frame);
     };
@@ -424,6 +427,12 @@ export function Showcase({ jars }: { jars: Jar[] }) {
     const onScroll = () => { dirty = true; };
     const onChapter = (e: Event) => goTo(Number((e.currentTarget as HTMLElement).dataset.go));
 
+    const ro = new ResizeObserver(onResize);
+    ro.observe(pin);
+    const onLost = (e: Event) => e.preventDefault();
+    const onRestored = () => { resize(); dirty = true; };
+    canvas.addEventListener("webglcontextlost", onLost);
+    canvas.addEventListener("webglcontextrestored", onRestored);
     window.addEventListener("mf:goto", onGoto);
     window.addEventListener("resize", onResize);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -450,6 +459,9 @@ export function Showcase({ jars }: { jars: Jar[] }) {
     return () => {
       disposed = true;
       cancelAnimationFrame(raf);
+      ro.disconnect();
+      canvas.removeEventListener("webglcontextlost", onLost);
+      canvas.removeEventListener("webglcontextrestored", onRestored);
       window.removeEventListener("mf:goto", onGoto);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("scroll", onScroll);
