@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mood Food storefront redesign
 
-## Getting Started
+A redesign concept for [Mood Food](https://moodfood.co), the high-protein peanut butter brand from the Philippines. It is **inspired by Mood Food** and built from their brand: the name, the three jars (Chunky, Recover, Energy), the product photos and the claims on the page come from the brand and belong to Mood Food. This is not an official Mood Food site.
 
-First, run the development server:
+## Stack
+
+- [Next.js](https://nextjs.org) 16 (App Router, Cache Components) and React 19
+- [Shopify Hydrogen](https://shopify.dev/docs/storefronts/headless/hydrogen) 2026.10 for the Storefront API client, cart, and request handlers
+- [three.js](https://threejs.org) for the 3D jar
+- Tailwind CSS 4 and a hand-written stylesheet (`app/brand.css`)
+- pnpm
+
+## What's in it
+
+- Home page: announcement bar, centred-logo header, fitted headline, pinned scroll scenes with a WebGL jar, products section, brand statement and footer.
+- Storefront: collections (`/collections/spreads`, `/bar`, `/kids`), product pages, search, cart (drawer and `/cart` page), and customer account.
+- Info and policy pages: `/pages/*` and `/policies/*` read from Shopify and fall back to a copy of the brand's own text when the store has none.
+- Prices in Philippine pesos (PHP). The market is set in one place, `lib/market.ts`.
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.example .env.local
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+By default the app points at [mock.shop](https://mock.shop), Shopify's tokenless demo store. It has no peanut butter, so the jars show "Coming soon to the store" and no Add button. To try add-to-cart against the demo store, map the jar handles to products it does have:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+JAR_HANDLE_CHUNKY=slides JAR_HANDLE_RECOVER=sweatpants JAR_HANDLE_ENERGY=men-t-shirt pnpm build
+JAR_HANDLE_CHUNKY=slides JAR_HANDLE_RECOVER=sweatpants JAR_HANDLE_ENERGY=men-t-shirt pnpm start
+```
 
-## Learn More
+The jar products are read when the page is built, so set these variables for both `build` and `start`. Prices from mock.shop show in its own currency (CA$), because it doesn't sell in PHP.
 
-To learn more about Next.js, take a look at the following resources:
+### Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Command | What it does |
+|---|---|
+| `pnpm dev` | Development server |
+| `pnpm build` / `pnpm start` | Production build and server |
+| `pnpm lint` | ESLint |
+| `pnpm typecheck` | TypeScript and `hydrogen gql check` |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Connecting a real store
 
-## Deploy on Vercel
+1. Create a Shopify store that sells in PHP (Markets) and add the products: Chunky, Recover and Energy, each with 250g and 500g variants, plus Bar and KiDS.
+2. Create collections with the handles `spreads`, `bar` and `kids`.
+3. Fill in the variables in `.env.example`: `PUBLIC_STORE_DOMAIN`, `PUBLIC_STOREFRONT_API_TOKEN`, `SHOP_ID`, `PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID`, `CUSTOMER_ACCOUNT_SESSION_SECRET`, and the `JAR_HANDLE_*` product handles. Customer login needs a public HTTPS address.
+4. Add the policies and the pages (FAQs, Contact, Where to buy, Cancellation policy, Legal notice) in Shopify.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Still to do
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Real Bar and KiDS pack photos (the current ones are placeholders).
+- Photos of the back of each jar. The 3D jar's back is generated from the front photo.
+- Social media links in the brand section.
+- Check the phone layout of the scroll scenes with the real two-size products.
+
+## Deploying
+
+Vercel works as-is for Next.js 16. Set the environment variables above in the project settings. Shopify Oxygen would need rework, because Hydrogen's Oxygen guide covers React Router only.
+
+## Credits
+
+Brand, product photos and copy: Mood Food. This redesign concept and its code are a separate proposal inspired by the brand.
