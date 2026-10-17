@@ -183,7 +183,8 @@ export function Showcase({ jars }: { jars: Jar[] }) {
     let sT = 0, sC = 0, lastIdx = -1, lastJar = -1, dirty = true, last = performance.now();
 
     const nav = () => document.querySelector<HTMLElement>(".nav");
-    const navH = () => nav()?.offsetHeight ?? 0;
+    const bar = () => document.querySelector<HTMLElement>(".bar");
+    const navH = () => (nav()?.offsetHeight ?? 0) + (bar()?.offsetHeight ?? 0);
 
     const loadImg = (src: string) =>
       new Promise<HTMLImageElement>((res) => {

@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { CartAnalytics, PageViewTracker } from "@/components/analytics";
+import { AnnouncementBar } from "@/components/announcement-bar";
 import { CartDrawer } from "@/components/cart-drawer";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
@@ -28,6 +29,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
       <Suspense fallback={null}>
         <PageViewTracker />
       </Suspense>
+      <AnnouncementBar />
       <Navbar />
       <div className="flex flex-1 flex-col">{children}</div>
       <Footer />
